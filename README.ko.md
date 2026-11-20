@@ -2,7 +2,7 @@
 
 [English](README.md) | [한국어](README.ko.md)
 
-Kotlin/Spring 서버는 이 SDK로 `GET /v1/me`의 프로필 응답을 만듭니다. 서버가 요청을 인증하고 계정을 조회하면, Rust 라이브러리가 표시 이름을 정하고 응답을 JSON으로 직렬화합니다. Rust Inside가 SDK를 빌드해 이 저장소에 JAR로 배포합니다. [Rust 구현](https://github.com/Rust-Inside/sample-rust-core/blob/main/src/api.rs)
+Kotlin/Spring 서버는 이 SDK로 `GET /v1/me`의 프로필 응답을 만듭니다. 서버가 요청을 인증하고 계정을 조회하면, Rust 라이브러리가 표시 이름을 정하고 응답을 JSON으로 직렬화합니다. Rust Inside가 SDK를 빌드해 이 저장소에 JAR로 배포합니다. [Rust 구현](https://github.com/Rust-Inside/sample-rust-core/blob/v0.1.0/src/api.rs)
 
 JVM 17 이상이 필요합니다. JAR에는 Linux(glibc) x86-64·ARM64용 네이티브 라이브러리와 Apple Silicon Mac에서 개발할 때 쓸 라이브러리가 들어 있습니다.
 
@@ -32,18 +32,26 @@ dependencies {
 
 ## 로그인한 사용자의 프로필 응답
 
-`mePath()`는 `/v1/me`를 반환합니다. 이 경로를 처리하는 컨트롤러에서 인증한 계정의 ID, 핸들, 닉네임을 `meResponseJson`에 넘기세요. 반환된 JSON 문자열을 응답 본문으로 보냅니다.
+Spring 컨트롤러에 `GET /v1/me`를 선언하고, Spring Security에서 이 경로에 인증을 요구하도록 설정하세요. 예제의 `AccountService.requireByUsername`은 앱에서 구현하는 계정 조회 메서드입니다. 컨트롤러는 인증된 계정의 데이터를 `meResponseJson()`에 넘겨 JSON 응답을 보냅니다.
 
 ```kotlin
 import dev.rustinside.sample_rust_coresdk.meResponseJson
+import java.security.Principal
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RestController
 
-fun profileResponse(id: String, handle: String, nickname: String): ResponseEntity<String> =
-    ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(meResponseJson(id, handle, nickname))
+@RestController
+class ProfileController(private val accounts: AccountService) {
+    @GetMapping("/v1/me", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getMe(principal: Principal): String {
+        val account = accounts.requireByUsername(principal.name)
+        return meResponseJson(account.id, account.handle, account.nickname)
+    }
+}
 ```
+
+현재 Rust 코어 소스는 요청 경로를 내부 상수로 관리합니다. 이미 배포된 `v0.1.0` JAR에는 이전 `mePath()` API가 포함돼 있습니다. [현재 Rust 소스](https://github.com/Rust-Inside/sample-rust-core/blob/main/src/api.rs)
 
 닉네임이 비어 있으면 핸들이 표시 이름이 됩니다. 예를 들어 `meResponseJson("u42", "martin", "")`은 `{"id":"u42","handle":"martin","displayName":"@martin"}`을 반환합니다.
 
