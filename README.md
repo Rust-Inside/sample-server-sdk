@@ -2,13 +2,13 @@
 
 [English](README.md) | [한국어](README.ko.md)
 
-A Kotlin/Spring server uses this SDK to build the profile response for `GET /v1/me`. Your server authenticates the request and looks up the account. The Rust library chooses the display name and serializes the response. Rust Inside builds the SDK and publishes it here as a JAR. [Rust implementation](https://github.com/Rust-Inside/sample-rust-core/blob/v0.1.0/src/api.rs)
+A Kotlin/Spring server uses this SDK to build the profile response for `GET /v1/me`. Your server authenticates the request and looks up the account. The Rust library chooses the display name and serializes the response. Rust Inside builds the SDK and publishes it here as a JAR. [Rust implementation](https://github.com/Rust-Inside/sample-rust-core/blob/v0.2.0/src/api.rs)
 
 The JAR requires JVM 17 or later. It includes native libraries for Linux with glibc on x86-64 and ARM64, and for development on Apple Silicon Macs.
 
 ## Install with Gradle
 
-Gradle can download the JAR and its Ivy descriptor directly from GitHub Releases. Add the following Ivy repository to `dependencyResolutionManagement.repositories` in `settings.gradle.kts`. Include `mavenCentral()` in the same block for Kotlin, coroutines, and JNA. [Release v0.1.0](https://github.com/Rust-Inside/sample-server-sdk/releases/tag/v0.1.0)
+Gradle can download the JAR and its Ivy descriptor directly from GitHub Releases. Add the following Ivy repository to `dependencyResolutionManagement.repositories` in `settings.gradle.kts`. Include `mavenCentral()` in the same block for Kotlin, coroutines, and JNA. [Release v0.2.0](https://github.com/Rust-Inside/sample-server-sdk/releases/tag/v0.2.0)
 
 ```kotlin
 ivy {
@@ -26,7 +26,7 @@ Add the SDK dependency to the server module's `build.gradle.kts`.
 
 ```kotlin
 dependencies {
-    implementation("dev.rustinside.sample_rust_coresdk:sample-rust-core-jvm:0.1.0")
+    implementation("dev.rustinside.sample_rust_coresdk:sample-rust-core-jvm:0.2.0")
 }
 ```
 
@@ -51,7 +51,7 @@ class ProfileController(private val accounts: AccountService) {
 }
 ```
 
-The current core source keeps the request path in a private Rust constant. The published `v0.1.0` JAR still contains the earlier `mePath()` API. [Current Rust source](https://github.com/Rust-Inside/sample-rust-core/blob/main/src/api.rs)
+The Rust client keeps the request path in a private constant. The earlier `v0.1.0` JAR also exposed `mePath()`.
 
 If the nickname is empty, the library uses the handle as the display name. For example, `meResponseJson("u42", "martin", "")` returns `{"id":"u42","handle":"martin","displayName":"@martin"}`.
 
