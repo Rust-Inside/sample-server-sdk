@@ -1,6 +1,6 @@
 # Sample Rust Core · Kotlin/JVM SDK
 
-[English](README.md) | [한국어](README.ko.md)
+[English](README.md)
 
 Kotlin/Spring 서버는 이 SDK로 `GET /v1/me`의 프로필 응답을 만듭니다. 서버가 요청을 인증하고 계정을 조회하면, Rust 라이브러리가 표시 이름을 정하고 응답을 JSON으로 직렬화합니다. Rust Inside가 SDK를 빌드해 이 저장소에 JAR로 배포합니다. [Rust 구현](https://github.com/Rust-Inside/sample-rust-core/blob/v0.2.0/src/api.rs)
 

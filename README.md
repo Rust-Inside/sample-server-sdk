@@ -1,6 +1,6 @@
 # Sample Rust Core · Kotlin/JVM SDK
 
-[English](README.md) | [한국어](README.ko.md)
+[한국어](README.ko.md)
 
 A Kotlin/Spring server uses this SDK to build the profile response for `GET /v1/me`. Your server authenticates the request and looks up the account. The Rust library chooses the display name and serializes the response. Rust Inside builds the SDK and publishes it here as a JAR. [Rust implementation](https://github.com/Rust-Inside/sample-rust-core/blob/v0.2.0/src/api.rs)
 
